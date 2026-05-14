@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GradDUCC 🦆</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root {
+  --blue: #002147;
+  --blue-dark: #00152e;
+  --gold: #C5A100;
+  --gold-light: #F0CC4E;
+  --gold-pale: #FFF8E1;
+  --cream: #FFFDF5;
+  --radius: 14px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--blue-dark);
+  color: var(--cream);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(0,21,46,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(197,161,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab {
+  background: none;
+  border: none;
+  color: rgba(255,248,225,0.55);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-tab.active, .nav-tab:hover {
+  background: rgba(197,161,0,0.18);
+  color: var(--gold-light);
+}
+.duck-id-badge {
+  background: rgba(197,161,0,0.15);
+  border: 1px solid rgba(197,161,0,0.35);
+  color: var(--gold-light);
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── NO-DUCK SCREEN ── */
+#page-noduck {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+.noduck-inner { max-width: 360px; }
+.noduck-inner .duck-big { font-size: 5rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+.noduck-inner h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold-light); margin-bottom: 0.75rem; }
+.noduck-inner p { color: rgba(255,248,225,0.55); font-size: 0.9rem; line-height: 1.6; }
+
+/* ── HERO ── */
+.hero {
+  min-height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.bg-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: repeating-linear-gradient(45deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 28px);
+  pointer-events: none;
+}
+.duck-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  animation: float 3.5s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+.duck-svg { width: 110px; height: 110px; filter: drop-shadow(0 8px 24px rgba(197,161,0,0.45)); }
+.grad-cap { position: absolute; top: -14px; left: 50%; transform: translateX(-46%); font-size: 34px; animation: capwobble 3.5s ease-in-out infinite; }
+@keyframes capwobble { 0%,100%{transform:translateX(-46%) rotate(-5deg)} 50%{transform:translateX(-46%) rotate(5deg)} }
+.badge {
+  display: inline-block;
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  border: 1px solid var(--gold);
+  padding: 5px 18px;
+  border-radius: 40px;
+  margin-bottom: 1rem;
+}
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 8vw, 3.8rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+h1 span { color: var(--gold-light); display: block; }
+.hero-sub { font-size: 1rem; font-weight: 300; color: rgba(255,248,225,0.65); margin-bottom: 2rem; line-height: 1.5; }
+
+/* ── LOCKED STATE ── */
+.locked-box {
+  background: rgba(197,161,0,0.07);
+  border: 1px solid rgba(197,161,0,0.25);
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  max-width: 380px;
+  margin: 0 auto;
+  text-align: center;
+}
+.locked-icon { font-size: 3rem; margin-bottom: 1rem; }
+.locked-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold-light); margin-bottom: 0.5rem; }
+.locked-sub { font-size: 0.85rem; color: rgba(255,248,225,0.55); line-height: 1.6; margin-bottom: 1.5rem; }
+.countdown { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; }
+.countdown-unit { text-align: center; }
+.countdown-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--gold-light);
+  display: block;
+  line-height: 1;
+}
+.countdown-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,248,225,0.4); margin-top: 4px; }
+
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.btn-primary {
+  background: var(--gold);
+  color: var(--blue);
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 13px 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.88; }
+.btn-secondary {
+  background: transparent;
+  color: var(--gold-light);
+  border: 1.5px solid var(--gold);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  padding: 12px 28px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+.stats-row { display: flex; gap: 2rem; margin-top: 2.5rem; justify-content: center; }
+.stat { text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--gold-light); }
+.stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,248,225,0.45); margin-top: 2px; }
+
+/* ── ALBUM ── */
+#page-album { background: #080e1a; padding-bottom: 4rem; }
+.album-header {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.album-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--gold-light); }
+.album-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-btn {
+  background: rgba(197,161,0,0.1);
+  border: 1px solid rgba(197,161,0,0.25);
+  color: rgba(255,248,225,0.65);
+  font-size: 0.78rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.filter-btn.active { background: var(--gold); color: var(--blue); border-color: var(--gold); font-weight: 500; }
+
+/* ── UPLOAD ZONE ── */
+.upload-zone {
+  margin: 0 1rem 1.5rem;
+  border: 2px dashed rgba(197,161,0,0.35);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(197,161,0,0.04);
+}
+.upload-zone:hover, .upload-zone.dragover { border-color: var(--gold); background: rgba(197,161,0,0.1); }
+.upload-icon { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.upload-text { font-size: 0.9rem; color: rgba(255,248,225,0.55); }
+.upload-text strong { color: var(--gold-light); }
+.upload-limit { font-size: 0.78rem; color: rgba(255,248,225,0.35); margin-top: 4px; }
+#photo-input { display: none; }
+
+/* ── LOCKED ALBUM ── */
+.album-locked {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+.film-strip {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+.film-frame {
+  width: 70px;
+  height: 70px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(197,161,0,0.2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  opacity: 0.5;
+}
+
+/* ── PHOTO GRID ── */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 6px;
+  padding: 0 6px;
+}
+.photo-item {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.04);
+}
+.photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+.photo-item:hover img { transform: scale(1.05); }
+.photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,21,46,0.9) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: flex-end;
+  padding: 8px;
+}
+.photo-item:hover .photo-overlay { opacity: 1; }
+.photo-caption { font-size: 0.72rem; color: var(--gold-light); font-weight: 500; }
+.duck-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(0,21,46,0.85);
+  border: 1px solid rgba(197,161,0,0.4);
+  color: var(--gold-light);
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 10px;
+}
+
+/* ── MY PHOTOS PAGE ── */
+#page-mine { background: #080e1a; padding: 1.5rem; min-height: calc(100vh - 56px); }
+.mine-header { margin-bottom: 1.5rem; }
+.mine-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--gold-light); margin-bottom: 0.25rem; }
+.mine-sub { font-size: 0.82rem; color: rgba(255,248,225,0.45); }
+.upload-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(197,161,0,0.1);
+  border: 1px solid rgba(197,161,0,0.25);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+.upload-count-icon { font-size: 1.3rem; }
+.upload-count-text { font-size: 0.85rem; color: rgba(255,248,225,0.7); }
+.upload-count-text strong { color: var(--gold-light); }
+.progress-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-track-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 3px;
+  transition: width 0.4s;
+}
+
+/* ── UPLOAD MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #0d1e35;
+  border: 1px solid rgba(197,161,0,0.25);
+  border-radius: 20px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold-light); margin-bottom: 1.25rem; }
+.form-group { margin-bottom: 1rem; }
+label { display: block; font-size: 0.78rem; color: rgba(255,248,225,0.55); margin-bottom: 5px; letter-spacing: 0.05em; text-transform: uppercase; }
+input[type=text], textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(197,161,0,0.22);
+  border-radius: 10px;
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+input[type=text]:focus, textarea:focus { border-color: var(--gold); }
+textarea { resize: vertical; min-height: 65px; }
+.img-preview { width: 100%; border-radius: 10px; margin-top: 0.5rem; display: none; max-height: 200px; object-fit: cover; }
+.modal-actions { display: flex; gap: 10px; margin-top: 1.25rem; }
+.btn-cancel {
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,248,225,0.65);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  padding: 11px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn-submit {
+  flex: 2;
+  background: var(--gold);
+  color: var(--blue);
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 11px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+.upload-progress-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-top: 0.75rem; overflow: hidden; display: none; }
+.upload-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.3s; width: 0%; }
+
+/* ── LIGHTBOX ── */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.94);
+  z-index: 300;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 80vh; border-radius: 12px; object-fit: contain; }
+.lightbox-meta { margin-top: 1rem; text-align: center; }
+.lightbox-caption { font-size: 0.95rem; color: var(--cream); }
+.lightbox-duck { font-size: 0.78rem; color: rgba(255,248,225,0.4); margin-top: 4px; }
+.lightbox-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: var(--cream);
+  font-size: 1.3rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a2e4a;
+  border: 1px solid var(--gold);
+  color: var(--cream);
+  padding: 11px 20px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  z-index: 500;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+
+/* ── SPINNER ── */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(197,161,0,0.25);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg) } }
+
+.empty-state { text-align: center; padding: 2.5rem; color: rgba(255,248,225,0.35); font-size: 0.85rem; }
+
+@media(max-width:480px) { .nav-tabs { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🦆 GradDUCC</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home')">Home</button>
+    <button class="nav-tab" id="tab-album" onclick="showPage('album')">Class Album</button>
+    <button class="nav-tab" id="tab-mine" onclick="showPage('mine')">My Photos</button>
+  </div>
+  <div id="nav-right"></div>
+</nav>
+
+<!-- NO DUCK SCREEN -->
+<div id="page-noduck" class="page">
+  <div class="noduck-inner">
+    <div class="duck-big">🦆</div>
+    <h2>Tap your DUCC</h2>
+    <p>This page needs to be opened by tapping your GradDUCC — each duck has its own unique link that unlocks your personal album.</p>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page">
+  <div class="hero">
+    <div class="bg-pattern"></div>
+    <div class="duck-wrapper">
+      <span class="grad-cap">🎓</span>
+      <svg class="duck-svg" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="65" cy="82" rx="42" ry="30" fill="#C5A100"/>
+        <ellipse cx="65" cy="80" rx="38" ry="27" fill="#F0CC4E"/>
+        <circle cx="65" cy="52" r="22" fill="#F0CC4E"/>
+        <circle cx="65" cy="50" r="20" fill="#F5D45A"/>
+        <ellipse cx="72" cy="46" rx="5" ry="7" fill="white" opacity="0.6"/>
+        <circle cx="70" cy="45" r="4" fill="#1a1206"/>
+        <circle cx="71.5" cy="43.5" r="1.2" fill="white"/>
+        <path d="M78 54 Q88 52 90 57 Q88 60 78 59Z" fill="#E8820C"/>
+        <ellipse cx="50" cy="95" rx="14" ry="5" fill="#E8820C" opacity="0.85"/>
+        <ellipse cx="80" cy="95" rx="14" ry="5" fill="#E8820C" opacity="0.85"/>
+        <ellipse cx="50" cy="92" rx="13" ry="4.5" fill="#F5A623"/>
+        <ellipse cx="80" cy="92" rx="13" ry="4.5" fill="#F5A623"/>
+      </svg>
+    </div>
+    <div class="badge">University of Rhode Island · 2026</div>
+    <h1>Class of<span>'26</span></h1>
+    <p class="hero-sub" id="hero-sub">Loading…</p>
+    <div id="hero-action"></div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num" id="stat-photos">—</div><div class="stat-label">Photos</div></div>
+      <div class="stat"><div class="stat-num" id="stat-ducks">—</div><div class="stat-label">DUCCs</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ALBUM PAGE -->
+<div id="page-album" class="page">
+  <div class="album-header">
+    <div class="album-title">Class Album 📸</div>
+    <div class="album-filters">
+      <button class="filter-btn active" onclick="filterAlbum('all',this)">All Photos</button>
+      <button class="filter-btn" onclick="filterAlbum('mine',this)">My DUCC's</button>
+    </div>
+  </div>
+  <div id="album-body"></div>
+</div>
+
+<!-- MY PHOTOS PAGE -->
+<div id="page-mine" class="page">
+  <div class="mine-header">
+    <div class="mine-title">My Photos 🦆</div>
+    <div class="mine-sub" id="mine-duck-label">—</div>
+  </div>
+  <div id="mine-body"></div>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="upload-modal">
+  <div class="modal">
+    <div class="modal-title">📸 Add a Photo</div>
+    <div class="form-group">
+      <label>Photo</label>
+      <input type="file" id="photo-input" accept="image/*" onchange="previewPhoto(this)">
+      <button class="btn-secondary" style="width:100%;font-size:0.85rem;padding:10px;margin-top:6px;" onclick="document.getElementById('photo-input').click()">Choose Photo</button>
+      <img id="img-preview" class="img-preview" alt="preview">
+    </div>
+    <div class="form-group">
+      <label>Caption (optional)</label>
+      <textarea id="upload-caption" placeholder="Add a caption…"></textarea>
+    </div>
+    <div class="upload-progress-bar" id="upload-progress-bar">
+      <div class="upload-progress-fill" id="upload-progress-fill"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeUploadModal()">Cancel</button>
+      <button class="btn-submit" id="upload-btn" onclick="uploadPhoto()" disabled>Upload 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-meta">
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+    <div class="lightbox-duck" id="lightbox-duck"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// CONFIG — replace with your Supabase values
+// ─────────────────────────────────────────────
+const SUPABASE_URL = 'https://xmlolyimttlokakjhtst.supabase.co/rest/v1/';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbG9seWltdHRsb2tha2podHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3ODYxODIsImV4cCI6MjA5NDM2MjE4Mn0.GnMTbPJscy7K8E7kvjja5-_iJll6jaRwZUVNWBByJqs';
+const BUCKET = 'uri26photos'; // must match your bucket name exactly
+const REVEAL_DATE = new Date('2026-05-18T00:00:00'); // midnight May 18
+const MAX_UPLOADS = 26;
+const ADMIN_PASSWORD = 'gradduccadmin2026'; // change this!
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ─────────────────────────────────────────────
+// DUCK ID — read from URL ?duck=001
+// ─────────────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const DUCK_ID = params.get('duck');
+const IS_ADMIN = params.get('admin') === ADMIN_PASSWORD;
+const IS_REVEALED = IS_ADMIN || new Date() >= REVEAL_DATE;
+
+let allPhotos = [];
+let myPhotos = [];
+let currentFilter = 'all';
+let pendingFile = null;
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+(async () => {
+  if (!DUCK_ID && !IS_ADMIN) {
+    showOnlyPage('noduck');
+    return;
+  }
+
+  // Show duck badge in nav
+  if (DUCK_ID) {
+    document.getElementById('nav-right').innerHTML =
+      `<div class="duck-id-badge">🦆 DUCC #${DUCK_ID}</div>`;
+  } else {
+    document.getElementById('nav-right').innerHTML =
+      `<div class="duck-id-badge" style="background:rgba(255,100,100,0.15);border-color:rgba(255,100,100,0.4);color:#ff9999;">👁 ADMIN</div>`;
+  }
+
+  showPage('home');
+  renderHero();
+  updateStats();
+})();
+
+// ─────────────────────────────────────────────
+// HERO
+// ─────────────────────────────────────────────
+function renderHero() {
+  const heroSub = document.getElementById('hero-sub');
+  const heroAction = document.getElementById('hero-action');
+
+  if (IS_REVEALED) {
+    heroSub.textContent = 'Your photos have developed. Welcome to the class album.';
+    heroAction.innerHTML = `
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('album')">📷 View Class Album</button>
+        <button class="btn-secondary" onclick="showPage('mine')">My Photos</button>
+      </div>`;
+  } else {
+    heroSub.textContent = 'Your photos are developing… they reveal on May 18th after graduation.';
+    heroAction.innerHTML = `
+      <div class="locked-box">
+        <div class="locked-icon">📷</div>
+        <div class="locked-title">Developing…</div>
+        <div class="locked-sub">Like a disposable camera, your photos are locked until graduation day. Come back on May 18th!</div>
+        <div class="countdown" id="countdown"></div>
+        <button class="btn-primary" onclick="showPage('mine')">📸 Add More Photos</button>
+      </div>`;
+    startCountdown();
+  }
+}
+
+function startCountdown() {
+  function tick() {
+    const el = document.getElementById('countdown');
+    if (!el) return;
+    const now = new Date();
+    const diff = REVEAL_DATE - now;
+    if (diff <= 0) { location.reload(); return; }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    el.innerHTML = [['Days',d],['Hrs',h],['Min',m],['Sec',s]].map(([l,n]) =>
+      `<div class="countdown-unit"><span class="countdown-num">${String(n).padStart(2,'0')}</span><div class="countdown-label">${l}</div></div>`
+    ).join('');
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ─────────────────────────────────────────────
+// PAGE ROUTING
+// ─────────────────────────────────────────────
+function showOnlyPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + name);
+  if (el) el.classList.add('active');
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const map = {home:0, album:1, mine:2};
+  const tabs = document.querySelectorAll('.nav-tab');
+  if (tabs[map[name]]) tabs[map[name]].classList.add('active');
+
+  if (name === 'album') loadAlbum();
+  if (name === 'mine') loadMine();
+}
+
+// ─────────────────────────────────────────────
+// ALBUM
+// ─────────────────────────────────────────────
+async function loadAlbum() {
+  const body = document.getElementById('album-body');
+
+  if (!IS_REVEALED) {
+    body.innerHTML = `
+      <div class="album-locked">
+        <div style="font-size:3rem;margin-bottom:1rem;">🎞️</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold-light);margin-bottom:0.5rem;">Still Developing</div>
+        <div style="font-size:0.85rem;color:rgba(255,248,225,0.45);margin-bottom:1.5rem;line-height:1.6;">The class album unlocks on May 18th after graduation.<br>Keep adding your photos until then!</div>
+        <div class="film-strip">
+          ${Array(8).fill('<div class="film-frame">📷</div>').join('')}
+        </div>
+        <button class="btn-primary" onclick="openUploadModal()">📸 Add Your Photos</button>
+      </div>`;
+    return;
+  }
+
+  body.innerHTML = `
+    <div class="upload-zone" id="upload-zone" onclick="openUploadModal()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-text"><strong>Tap to upload</strong> · or drag here</div>
+      <div class="upload-limit">JPG, PNG, HEIC · up to ${MAX_UPLOADS} photos per DUCC</div>
+    </div>
+    <div class="photo-grid" id="photo-grid">
+      <div style="grid-column:1/-1;padding:2rem;text-align:center;color:rgba(255,248,225,0.3);"><div class="spinner"></div>Loading…</div>
+    </div>`;
+
+  const { data, error } = await sb.from('photos')
+    .select('*')
+    .order('uploaded_at', { ascending: false });
+
+  if (error) { showToast('Failed to load photos'); return; }
+  allPhotos = data || [];
+  renderAlbumGrid();
+}
+
+function renderAlbumGrid() {
+  const grid = document.getElementById('photo-grid');
+  if (!grid) return;
+  let photos = allPhotos;
+  if (currentFilter === 'mine') photos = allPhotos.filter(p => p.duck_id === DUCK_ID);
+  if (!photos.length) {
+    grid.innerHTML = '<div class="empty-state">No photos yet — be the first! 📸</div>';
+    return;
+  }
+  grid.innerHTML = photos.map(p => `
+    <div class="photo-item" onclick="openLightbox('${p.id}')">
+      <img src="${p.public_url}" alt="${p.caption||''}" loading="lazy">
+      ${p.duck_id === DUCK_ID ? `<div class="duck-badge">🦆 Mine</div>` : ''}
+      <div class="photo-overlay"><span class="photo-caption">${p.caption||''}</span></div>
+    </div>`).join('');
+}
+
+function filterAlbum(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAlbumGrid();
+}
+
+// ─────────────────────────────────────────────
+// MY PHOTOS
+// ─────────────────────────────────────────────
+async function loadMine() {
+  const body = document.getElementById('mine-body');
+  document.getElementById('mine-duck-label').textContent = `DUCC #${DUCK_ID}`;
+
+  // Count uploads
+  const { data: myData, error } = await sb.from('photos')
+    .select('*')
+    .eq('duck_id', DUCK_ID)
+    .order('uploaded_at', { ascending: false });
+
+  myPhotos = myData || [];
+  const used = myPhotos.length;
+  const pct = Math.min((used / MAX_UPLOADS) * 100, 100);
+
+  body.innerHTML = `
+    <div class="upload-count">
+      <div class="upload-count-icon">📷</div>
+      <div class="upload-count-text"><strong>${used} / ${MAX_UPLOADS}</strong> photos used</div>
+      <div class="progress-track"><div class="progress-track-fill" style="width:${pct}%"></div></div>
+    </div>
+    ${used < MAX_UPLOADS ? `
+    <div class="upload-zone" style="margin:0 0 1.5rem;" onclick="openUploadModal()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+      <div class="upload-icon">📸</div>
+      <div class="upload-text"><strong>Add a photo</strong> · ${MAX_UPLOADS - used} remaining</div>
+    </div>` : `
+    <div style="text-align:center;padding:1rem;color:rgba(255,248,225,0.45);font-size:0.85rem;margin-bottom:1.5rem;">All ${MAX_UPLOADS} photos used! 🎉</div>`}
+    ${!IS_REVEALED && used > 0 ? `
+    <div style="text-align:center;padding:1rem 0 1.5rem;color:rgba(255,248,225,0.45);font-size:0.82rem;">
+      📷 ${used} photo${used!==1?'s':''} developing… reveals May 18th
+    </div>` : ''}
+    <div class="photo-grid" id="mine-grid">
+      ${!IS_REVEALED && used > 0 ? `
+        ${myPhotos.map(() => `<div class="photo-item" style="background:rgba(197,161,0,0.08);border:1px dashed rgba(197,161,0,0.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;">📷</div>`).join('')}
+      ` : ''}
+    </div>`;
+
+  if (IS_REVEALED && myPhotos.length) {
+    const grid = document.getElementById('mine-grid');
+    grid.innerHTML = myPhotos.map(p => `
+      <div class="photo-item" onclick="openLightboxDirect('${p.public_url}','${(p.caption||'').replace(/'/g,"\\'")}')">
+        <img src="${p.public_url}" alt="${p.caption||''}" loading="lazy">
+        <div class="photo-overlay"><span class="photo-caption">${p.caption||''}</span></div>
+      </div>`).join('');
+  } else if (!IS_REVEALED && used === 0) {
+    document.getElementById('mine-grid').innerHTML = '<div class="empty-state">No photos yet — add your first one above! 📸</div>';
+  }
+}
+
+// ─────────────────────────────────────────────
+// STATS
+// ─────────────────────────────────────────────
+async function updateStats() {
+  const { count: photoCount } = await sb.from('photos').select('*', { count: 'exact', head: true });
+  const { data: duckData } = await sb.from('photos').select('duck_id');
+  const uniqueDucks = new Set((duckData||[]).map(d => d.duck_id)).size;
+  document.getElementById('stat-photos').textContent = photoCount || 0;
+  document.getElementById('stat-ducks').textContent = uniqueDucks || 0;
+}
+
+// ─────────────────────────────────────────────
+// UPLOAD
+// ─────────────────────────────────────────────
+function openUploadModal() {
+  if (!DUCK_ID && !IS_ADMIN) return;
+  if (myPhotos.length >= MAX_UPLOADS) {
+    showToast(`You've used all ${MAX_UPLOADS} photos! 📷`);
+    return;
+  }
+  document.getElementById('upload-modal').classList.add('open');
+}
+
+function closeUploadModal() {
+  document.getElementById('upload-modal').classList.remove('open');
+  document.getElementById('img-preview').style.display = 'none';
+  document.getElementById('img-preview').src = '';
+  document.getElementById('upload-caption').value = '';
+  document.getElementById('upload-btn').disabled = true;
+  document.getElementById('photo-input').value = '';
+  document.getElementById('upload-progress-fill').style.width = '0%';
+  document.getElementById('upload-progress-bar').style.display = 'none';
+  pendingFile = null;
+}
+
+function previewPhoto(input) {
+  if (!input.files[0]) return;
+  pendingFile = input.files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('img-preview');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(pendingFile);
+  document.getElementById('upload-btn').disabled = false;
+}
+
+async function uploadPhoto() {
+  if (!pendingFile) return;
+  const btn = document.getElementById('upload-btn');
+  const bar = document.getElementById('upload-progress-bar');
+  const fill = document.getElementById('upload-progress-fill');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Uploading…';
+  bar.style.display = 'block';
+  fill.style.width = '30%';
+
+  const caption = document.getElementById('upload-caption').value.trim();
+  const ext = pendingFile.name.split('.').pop();
+  const path = `${DUCK_ID || 'admin'}_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+  const { error: storageError } = await sb.storage.from(BUCKET).upload(path, pendingFile, { contentType: pendingFile.type });
+  if (storageError) { showToast('Upload failed: ' + storageError.message); btn.disabled = false; btn.innerHTML = 'Upload 🚀'; return; }
+
+  fill.style.width = '65%';
+  const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
+  const publicUrl = urlData.publicUrl;
+
+  const { error: dbError } = await sb.from('photos').insert({
+    duck_id: DUCK_ID || 'admin',
+    storage_path: path,
+    public_url: publicUrl,
+    caption
+  });
+
+  if (dbError) { showToast('DB error: ' + dbError.message); return; }
+
+  fill.style.width = '100%';
+  showToast('Photo added! 📷');
+  closeUploadModal();
+  updateStats();
+
+  // Refresh current page
+  const activePage = document.querySelector('.page.active')?.id;
+  if (activePage === 'page-album') loadAlbum();
+  if (activePage === 'page-mine') loadMine();
+}
+
+// ─────────────────────────────────────────────
+// DRAG & DROP
+// ─────────────────────────────────────────────
+function onDragOver(e) { e.preventDefault(); document.getElementById('upload-zone')?.classList.add('dragover'); }
+function onDragLeave(e) { document.getElementById('upload-zone')?.classList.remove('dragover'); }
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone')?.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    pendingFile = file;
+    openUploadModal();
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById('photo-input').files = dt.files;
+    previewPhoto(document.getElementById('photo-input'));
+  }
+}
+
+// ─────────────────────────────────────────────
+// LIGHTBOX
+// ─────────────────────────────────────────────
+function openLightbox(photoId) {
+  const photo = allPhotos.find(p => p.id === photoId);
+  if (!photo) return;
+  document.getElementById('lightbox-img').src = photo.public_url;
+  document.getElementById('lightbox-caption').textContent = photo.caption || '';
+  document.getElementById('lightbox-duck').textContent = photo.duck_id ? `🦆 DUCC #${photo.duck_id}` : '';
+  document.getElementById('lightbox').classList.add('open');
+}
+function openLightboxDirect(url, caption) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox-caption').textContent = caption;
+  document.getElementById('lightbox-duck').textContent = '';
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+// ─────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
