@@ -1,0 +1,1354 @@
+< !DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>URI Class of 2026 🦆</title>< !-- Supabase --><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>< !-- face-api.js (runs entirely in browser, no API key needed) --><script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"><style>*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --blue: #002147;
+    --gold: #C5A100;
+    --gold-light: #F0CC4E;
+    --gold-pale: #FFF8E1;
+    --cream: #FFFDF5;
+    --text-dark: #1a1206;
+    --text-mid: #4a3e20;
+    --radius: 14px;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--blue);
+    color: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(0, 33, 71, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(197, 161, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+}
+
+.nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 4px;
+}
+
+.nav-tab {
+    background: none;
+    border: none;
+    color: rgba(255, 248, 225, 0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-tab.active,
+.nav-tab:hover {
+    background: rgba(197, 161, 0, 0.18);
+    color: var(--gold-light);
+}
+
+.nav-profile-btn {
+    background: var(--gold);
+    color: var(--blue);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.nav-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* ── PAGES ── */
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* ── HERO ── */
+.hero {
+    min-height: calc(100vh - 56px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    background-image: repeating-linear-gradient(45deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 28px);
+    pointer-events: none;
+}
+
+.duck-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    animation: float 3.5s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(-12px)
+    }
+}
+
+.duck-svg {
+    width: 120px;
+    height: 120px;
+    filter: drop-shadow(0 8px 24px rgba(197, 161, 0, 0.5));
+}
+
+.grad-cap {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-46%);
+    font-size: 36px;
+    animation: capwobble 3.5s ease-in-out infinite;
+}
+
+@keyframes capwobble {
+
+    0%,
+    100% {
+        transform: translateX(-46%) rotate(-5deg)
+    }
+
+    50% {
+        transform: translateX(-46%) rotate(5deg)
+    }
+}
+
+.badge {
+    display: inline-block;
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    border: 1px solid var(--gold);
+    padding: 5px 18px;
+    border-radius: 40px;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 8vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+}
+
+h1 span {
+    color: var(--gold-light);
+    display: block;
+}
+
+.hero-sub {
+    font-size: 1rem;
+    font-weight: 300;
+    color: rgba(255, 248, 225, 0.75);
+    margin-bottom: 2rem;
+}
+
+.hero-btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-primary {
+    background: var(--gold);
+    color: var(--blue);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 13px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--gold-light);
+    border: 1.5px solid var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 12px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.stats-row {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2.5rem;
+    justify-content: center;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--gold-light);
+}
+
+.stat-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 248, 225, 0.5);
+    margin-top: 2px;
+}
+
+/* ── ALBUM ── */
+#page-album {
+    background: #0a0f1a;
+    padding-bottom: 4rem;
+}
+
+.album-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.album-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--gold-light);
+}
+
+.album-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: rgba(197, 161, 0, 0.12);
+    border: 1px solid rgba(197, 161, 0, 0.3);
+    color: rgba(255, 248, 225, 0.7);
+    font-size: 0.78rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.filter-btn.active {
+    background: var(--gold);
+    color: var(--blue);
+    border-color: var(--gold);
+    font-weight: 500;
+}
+
+.upload-zone {
+    margin: 0 1rem 1.5rem;
+    border: 2px dashed rgba(197, 161, 0, 0.4);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(197, 161, 0, 0.04);
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+    border-color: var(--gold);
+    background: rgba(197, 161, 0, 0.1);
+}
+
+.upload-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.upload-text {
+    font-size: 0.9rem;
+    color: rgba(255, 248, 225, 0.6);
+}
+
+.upload-text strong {
+    color: var(--gold-light);
+}
+
+#photo-input {
+    display: none;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 6px;
+    padding: 0 6px;
+}
+
+.photo-item {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+}
+
+.photo-item:hover img {
+    transform: scale(1.05);
+}
+
+.photo-item .photo-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 33, 71, 0.9) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: flex-end;
+    padding: 8px;
+}
+
+.photo-item:hover .photo-overlay {
+    opacity: 1;
+}
+
+.photo-caption {
+    font-size: 0.72rem;
+    color: var(--gold-light);
+    font-weight: 500;
+}
+
+.face-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--gold);
+    color: var(--blue);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 10px;
+}
+
+/* ── UPLOAD MODAL ── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal {
+    background: #0d1e35;
+    border: 1px solid rgba(197, 161, 0, 0.3);
+    border-radius: 20px;
+    padding: 1.75rem;
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--gold-light);
+    margin-bottom: 1.25rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    color: rgba(255, 248, 225, 0.6);
+    margin-bottom: 5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+input[type=text],
+input[type=email],
+textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(197, 161, 0, 0.25);
+    border-radius: 10px;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 10px 14px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+textarea:focus {
+    border-color: var(--gold);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+.img-preview {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    display: none;
+    max-height: 220px;
+    object-fit: cover;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.25rem;
+}
+
+.btn-cancel {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 248, 225, 0.7);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 11px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-submit {
+    flex: 2;
+    background: var(--gold);
+    color: var(--blue);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 11px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin-top: 0.75rem;
+    overflow: hidden;
+    display: none;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width 0.3s;
+    width: 0%;
+}
+
+/* ── PROFILE PAGE ── */
+#page-profile {
+    background: #0a0f1a;
+    padding: 1.5rem;
+    min-height: calc(100vh - 56px);
+}
+
+.profile-card {
+    background: #0d1e35;
+    border: 1px solid rgba(197, 161, 0, 0.25);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.avatar-ring {
+    position: relative;
+    width: 72px;
+    height: 72px;
+}
+
+.avatar-ring img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2.5px solid var(--gold);
+}
+
+.avatar-ring .avatar-placeholder {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(197, 161, 0, 0.15);
+    border: 2px dashed rgba(197, 161, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.profile-info h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--gold-light);
+}
+
+.profile-info p {
+    font-size: 0.82rem;
+    color: rgba(255, 248, 225, 0.55);
+    margin-top: 3px;
+}
+
+.face-setup-box {
+    background: rgba(197, 161, 0, 0.07);
+    border: 1px solid rgba(197, 161, 0, 0.25);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.face-setup-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--gold-light);
+    margin-bottom: 0.35rem;
+}
+
+.face-setup-sub {
+    font-size: 0.78rem;
+    color: rgba(255, 248, 225, 0.55);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.face-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dot.green {
+    background: #4ade80;
+}
+
+.dot.amber {
+    background: #fbbf24;
+}
+
+.my-album-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 248, 225, 0.4);
+    font-size: 0.85rem;
+}
+
+/* ── PHOTO LIGHTBOX ── */
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 300;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.lightbox.open {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 12px;
+    object-fit: contain;
+}
+
+.lightbox-meta {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.lightbox-caption {
+    font-size: 0.95rem;
+    color: var(--cream);
+}
+
+.lightbox-faces {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.face-chip {
+    background: rgba(197, 161, 0, 0.2);
+    border: 1px solid rgba(197, 161, 0, 0.4);
+    color: var(--gold-light);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--cream);
+    font-size: 1.4rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* ── TOAST ── */
+.toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a2e4a;
+    border: 1px solid var(--gold);
+    color: var(--cream);
+    padding: 11px 20px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    z-index: 500;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+/* ── LOADING ── */
+.spinner {
+    width: 22px;
+    height: 22px;
+    border: 2.5px solid rgba(197, 161, 0, 0.3);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:480px) {
+    .nav-tabs {
+        display: none;
+    }
+}
+
+</style></head><body>< !-- NAV --><nav><div class="nav-logo">🦆 URI '26</div>
+ <div class="nav-tabs"><button class="nav-tab active" onclick="showPage('home')">Home</button><button class="nav-tab" onclick="showPage('album')">Album</button><button class="nav-tab" onclick="showPage('profile')">My Photos</button></div><div id="nav-right"><button class="nav-profile-btn" onclick="showPage('profile')" id="nav-profile-btn">Sign In / Join</button></div></nav>< !-- HOME PAGE --><div id="page-home" class="page active"><div class="hero"><div class="bg-pattern"></div><div class="duck-wrapper"><span class="grad-cap">🎓</span><svg class="duck-svg" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg"><ellipse cx="65" cy="82" rx="42" ry="30" fill="#C5A100" /><ellipse cx="65" cy="80" rx="38" ry="27" fill="#F0CC4E" /><circle cx="65" cy="52" r="22" fill="#F0CC4E" /><circle cx="65" cy="50" r="20" fill="#F5D45A" /><ellipse cx="72" cy="46" rx="5" ry="7" fill="white" opacity="0.6" /><circle cx="70" cy="45" r="4" fill="#1a1206" /><circle cx="71.5" cy="43.5" r="1.2" fill="white" /><path d="M78 54 Q88 52 90 57 Q88 60 78 59Z" fill="#E8820C" /><ellipse cx="50" cy="95" rx="14" ry="5" fill="#E8820C" opacity="0.85" /><ellipse cx="80" cy="95" rx="14" ry="5" fill="#E8820C" opacity="0.85" /><ellipse cx="50" cy="92" rx="13" ry="4.5" fill="#F5A623" /><ellipse cx="80" cy="92" rx="13" ry="4.5" fill="#F5A623" /></svg></div><div class="badge">University of Rhode Island · 2026</div><h1>Class of<span>'26</span></h1>
+ <p class="hero-sub">You made it,
+Rams. Share the moment.</p><div class="hero-btns"><button class="btn-primary" onclick="showPage('album'); openUploadModal()">📸 Add Your Photos</button><button class="btn-secondary" onclick="showPage('album')">Browse the Album</button></div><div class="stats-row"><div class="stat"><div class="stat-num" id="stat-photos">—</div><div class="stat-label">Photos</div></div><div class="stat"><div class="stat-num" id="stat-grads">—</div><div class="stat-label">Grads</div></div></div></div></div>< !-- ALBUM PAGE --><div id="page-album" class="page"><div class="album-header"><div class="album-title">Class Album 📸</div><div class="album-filters"><button class="filter-btn active" onclick="filterAlbum('all',this)">All Photos</button><button class="filter-btn" onclick="filterAlbum('mine',this)">My Photos</button></div></div><div class="upload-zone" id="upload-zone" onclick="openUploadModal()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)"><div class="upload-icon">🖼️</div><div class="upload-text"><strong>Tap to upload</strong>· or drag photos here</div><div class="upload-text" style="margin-top:4px;font-size:0.78rem;">JPG,
+PNG,
+HEIC · any size</div></div><div class="photo-grid" id="photo-grid"><div style="grid-column:1/-1; padding:3rem; text-align:center; color:rgba(255,248,225,0.3); font-size:0.85rem;"><div class="spinner"></div>Loading photos… </div></div></div>< !-- PROFILE / MY PHOTOS PAGE --><div id="page-profile" class="page"><div id="profile-setup" style="display:none;"><div class="profile-card"><div class="modal-title" style="margin-bottom:1rem;">👋 Join the Class Album</div><div class="form-group"><label>Your Name</label><input type="text" id="reg-name" placeholder="e.g. Jamie Rodriguez"></div><div class="form-group"><label>Email (optional)</label><input type="email" id="reg-email" placeholder="you@uri.edu"></div><button class="btn-primary" style="width:100%;margin-top:0.5rem;" onclick="registerProfile()">Create My Profile</button></div></div><div id="profile-view" style="display:none;"><div class="profile-card"><div class="profile-header"><div class="avatar-ring"><div class="avatar-placeholder" id="profile-avatar-placeholder" onclick="document.getElementById('face-input').click()">🦆</div><img id="profile-avatar-img" style="display:none;" src="" alt="avatar"></div><div class="profile-info"><h2 id="profile-name-display">—</h2><p id="profile-email-display">—</p></div></div><div class="face-setup-box"><div class="face-setup-title">🤖 Face Recognition</div><div class="face-setup-sub">Add a clear selfie so we can find you across every photo in the class album automatically.</div><div class="face-status" id="face-status"><span class="dot amber"></span><span>No face registered yet</span></div><button class="btn-secondary" style="font-size:0.82rem;padding:9px 18px;" onclick="document.getElementById('face-input').click()">📷 Add My Face </button><input type="file" id="face-input" accept="image/*" onchange="registerFace(this)" style="display:none;"><canvas id="face-canvas" style="display:none;"></canvas></div></div><div class="profile-card"><div class="my-album-title">Photos You're In</div>
+ <div class="photo-grid" id="my-photo-grid"><div class="empty-state">Register your face above to find your photos !</div></div></div></div></div>< !-- UPLOAD MODAL --><div class="modal-overlay" id="upload-modal"><div class="modal"><div class="modal-title">📸 Add a Photo</div><div class="form-group"><label>Photo</label><input type="file" id="photo-input" accept="image/*" onchange="previewPhoto(this)"><button class="btn-secondary" style="width:100%;font-size:0.85rem;padding:10px;margin-top:6px;" onclick="document.getElementById('photo-input').click()">Choose Photo</button><img id="img-preview" class="img-preview" alt="preview"></div><div class="form-group"><label>Caption (optional)</label><textarea id="upload-caption" placeholder="Add a caption…"></textarea></div><div class="progress-bar" id="upload-progress"><div class="progress-fill" id="progress-fill"></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeUploadModal()">Cancel</button><button class="btn-submit" id="upload-btn" onclick="uploadPhoto()" disabled>Upload 🚀</button></div></div></div>< !-- LIGHTBOX --><div class="lightbox" id="lightbox" onclick="closeLightbox()"><button class="lightbox-close" onclick="closeLightbox()">✕</button><img id="lightbox-img" src="" alt=""><div class="lightbox-meta"><div class="lightbox-caption" id="lightbox-caption"></div><div class="lightbox-faces" id="lightbox-faces"></div></div></div>< !-- TOAST --><div class="toast" id="toast"></div><script> // ─────────────────────────────────────────────
+// CONFIG — replace with your Supabase project values
+// ─────────────────────────────────────────────
+const SUPABASE_URL='YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY='YOUR_SUPABASE_ANON_KEY';
+const BUCKET='photos';
+
+const sb=supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let currentProfile=JSON.parse(localStorage.getItem('uri_profile') || 'null');
+let allPhotos=[];
+let faceModelsLoaded=false;
+let currentFilter='all';
+
+// ─────────────────────────────────────────────
+// NAV / PAGE ROUTING
+// ─────────────────────────────────────────────
+function showPage(name) {
+    document.querySelectorAll('.page').forEach(p=> p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=> t.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+
+    const tabs= {
+        home: 0, album:1, profile:2
+    }
+
+    ;
+    const tab=document.querySelectorAll('.nav-tab')[tabs[name]];
+    if (tab) tab.classList.add('active');
+    if (name==='album') loadPhotos();
+    if (name==='profile') renderProfile();
+}
+
+// ─────────────────────────────────────────────
+// FACE API LOADER
+// ─────────────────────────────────────────────
+async function loadFaceModels() {
+    if (faceModelsLoaded) return;
+    // Models hosted on jsDelivr CDN
+    const MODEL_URL='https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/model';
+    await Promise.all([ faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+        ]);
+    faceModelsLoaded=true;
+}
+
+// ─────────────────────────────────────────────
+// PROFILE
+// ─────────────────────────────────────────────
+function renderProfile() {
+    if ( !currentProfile) {
+        document.getElementById('profile-setup').style.display='block';
+        document.getElementById('profile-view').style.display='none';
+        return;
+    }
+
+    document.getElementById('profile-setup').style.display='none';
+    document.getElementById('profile-view').style.display='block';
+    document.getElementById('profile-name-display').textContent=currentProfile.name;
+    document.getElementById('profile-email-display').textContent=currentProfile.email || 'URI Class of 2026';
+
+    // Nav button → avatar
+    const navRight=document.getElementById('nav-right');
+
+    navRight.innerHTML=`<div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="showPage('profile')"><span style="font-size:0.82rem;color:var(--gold-light);">$ {
+        currentProfile.name.split(' ')[0]
+    }
+
+    </span><div style="width:34px;height:34px;border-radius:50%;background:rgba(197,161,0,0.2);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1rem;">🦆</div></div>`;
+
+    if (currentProfile.face_descriptor) {
+        document.getElementById('face-status').innerHTML='<span class="dot green"></span> <span>Face registered ✓</span>';
+        loadMyPhotos();
+    }
+}
+
+async function registerProfile() {
+    const name=document.getElementById('reg-name').value.trim();
+    const email=document.getElementById('reg-email').value.trim();
+
+    if ( !name) {
+        showToast('Please enter your name');
+        return;
+    }
+
+    const {
+        data,
+        error
+    }
+
+    =await sb.from('profiles').insert({
+        name, email
+    }).select().single();
+
+if (error) {
+    showToast('Error: ' + error.message);
+    return;
+}
+
+currentProfile=data;
+localStorage.setItem('uri_profile', JSON.stringify(data));
+renderProfile();
+showToast('Welcome to the album, ' + name.split(' ')[0] + '! 🦆');
+}
+
+// ─────────────────────────────────────────────
+// FACE REGISTRATION
+// ─────────────────────────────────────────────
+async function registerFace(input) {
+    if ( !input.files[0]) return;
+    showToast('Loading face recognition…');
+
+    try {
+        await loadFaceModels();
+        const img=await createImageBitmap(input.files[0]);
+        const canvas=document.getElementById('face-canvas');
+        canvas.width=img.width;
+        canvas.height=img.height;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+
+        const detection=await faceapi .detectSingleFace(canvas, new faceapi.TinyFaceDetectorOptions()) .withFaceLandmarks(true) .withFaceDescriptor();
+
+        if ( !detection) {
+            showToast('No face detected — try a clearer selfie!');
+            return;
+        }
+
+        const descriptor=Array.from(detection.descriptor);
+
+        // Save to Supabase
+        const {
+            error
+        }
+
+        =await sb.from('profiles') .update({
+            face_descriptor: descriptor
+        }) .eq('id', currentProfile.id);
+    if (error) throw error;
+
+    currentProfile.face_descriptor=descriptor;
+    localStorage.setItem('uri_profile', JSON.stringify(currentProfile));
+    document.getElementById('face-status').innerHTML='<span class="dot green"></span> <span>Face registered ✓</span>';
+    showToast('Face registered! Finding your photos… 🔍');
+    await matchFaceToExistingPhotos(descriptor);
+    loadMyPhotos();
+}
+
+catch (e) {
+    showToast('Error: ' + e.message);
+    console.error(e);
+}
+}
+
+// Match a newly registered face against all existing photo descriptors
+async function matchFaceToExistingPhotos(myDescriptor) {
+
+    // Load all photos that have stored face descriptors
+    const {
+        data: photoFaces
+    }
+
+    =await sb.from('photo_faces').select('*, photos(*)');
+    if ( !photoFaces) return;
+
+    // For each photo, try matching stored faces against myDescriptor
+    // (in a real app you'd store per-face descriptors; here we tag by photo)
+    // We'll do a quick scan of unmatched photos
+    const {
+        data: allPh
+    }
+
+    =await sb.from('photos').select('*');
+    if ( !allPh) return;
+
+    // Get already-tagged photo IDs for this profile
+    const {
+        data: tagged
+    }
+
+    =await sb.from('photo_faces').select('photo_id').eq('profile_id', currentProfile.id);
+    const taggedIds=new Set((tagged || []).map(t=> t.photo_id));
+
+    let newMatches=0;
+    const myFaceMatcher=new faceapi.FaceMatcher([new faceapi.LabeledFaceDescriptors('me', [new Float32Array(myDescriptor)])]);
+
+    for (const photo of allPh) {
+        if (taggedIds.has(photo.id)) continue;
+
+        // We need the image to re-detect faces
+        try {
+            const resp=await fetch(photo.public_url);
+            const blob=await resp.blob();
+            const img=await createImageBitmap(blob);
+            const canvas=document.createElement('canvas');
+            canvas.width=img.width;
+            canvas.height=img.height;
+            canvas.getContext('2d').drawImage(img, 0, 0);
+            const detections=await faceapi.detectAllFaces(canvas, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(true).withFaceDescriptors();
+
+            for (const det of detections) {
+                const match=myFaceMatcher.findBestMatch(det.descriptor);
+
+                if (match.distance < 0.5) {
+                    await sb.from('photo_faces').upsert({
+                        photo_id: photo.id, profile_id: currentProfile.id, confidence: 1 - match.distance
+                    });
+                newMatches++;
+                break;
+            }
+        }
+    }
+
+    catch (e) {
+        /* skip unprocessable images */
+    }
+}
+
+if (newMatches > 0) showToast(`Found you in $ {
+        newMatches
+    }
+
+    photo$ {
+        newMatches > 1 ? 's' : ''
+    }
+
+    ! 🎉`);
+}
+
+// ─────────────────────────────────────────────
+// PHOTOS — LOAD & DISPLAY
+// ─────────────────────────────────────────────
+async function loadPhotos() {
+    const grid=document.getElementById('photo-grid');
+    grid.innerHTML='<div style="grid-column:1/-1;padding:2rem;text-align:center;color:rgba(255,248,225,0.3);"><div class="spinner"></div> Loading…</div>';
+
+    const {
+        data,
+        error
+    }
+
+    =await sb.from('photos').select('*, photo_faces(profile_id, profiles(name))').order('uploaded_at', {
+        ascending: false
+    });
+
+if (error) {
+    grid.innerHTML='<div style="grid-column:1/-1;padding:2rem;text-align:center;color:rgba(255,0,0,0.5);">Failed to load photos.</div>';
+    return;
+}
+
+allPhotos=data || [];
+updateStats();
+renderGrid(allPhotos, grid, currentFilter);
+}
+
+function renderGrid(photos, grid, filter) {
+    let filtered=photos;
+
+    if (filter==='mine' && currentProfile) {
+        filtered=photos.filter(p=> p.photo_faces?.some(f=> f.profile_id===currentProfile.id));
+    }
+
+    if ( !filtered.length) {
+        grid.innerHTML='<div style="grid-column:1/-1;" class="empty-state">No photos yet — be the first to upload! 📸</div>';
+        return;
+    }
+
+    grid.innerHTML=filtered.map(p=> {
+            const names=(p.photo_faces || []).map(f=> f.profiles?.name).filter(Boolean);
+
+            const facesBadge=names.length ? `<span class="face-badge" >👤 $ {
+                names.length
+            }
+
+            </span>` : '';
+
+            return `<div class="photo-item" onclick="openLightbox('${p.id}')" > <img src="${p.public_url}" alt="${p.caption || ''}" loading="lazy" > $ {
+                facesBadge
+            }
+
+            <div class="photo-overlay" ><span class="photo-caption" >$ {
+                p.caption || ''
+            }
+
+            </span></div> </div>`;
+        }).join('');
+}
+
+async function loadMyPhotos() {
+    if ( !currentProfile) return;
+    const grid=document.getElementById('my-photo-grid');
+
+    const {
+        data
+    }
+
+    =await sb.from('photo_faces').select('photos(*)').eq('profile_id', currentProfile.id);
+    const photos=(data || []).map(d=> d.photos).filter(Boolean);
+
+    if ( !photos.length) {
+        grid.innerHTML='<div class="empty-state">No photos found yet. Upload more or register your face!</div>';
+        return;
+    }
+
+    grid.innerHTML=photos.map(p=> `<div class="photo-item" onclick="openLightboxByUrl('${p.public_url}','${p.caption||''}')" > <img src="${p.public_url}" alt="${p.caption||''}" loading="lazy" > </div>`).join('');
+}
+
+function filterAlbum(filter, btn) {
+    currentFilter=filter;
+    document.querySelectorAll('.filter-btn').forEach(b=> b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGrid(allPhotos, document.getElementById('photo-grid'), filter);
+}
+
+async function updateStats() {
+    document.getElementById('stat-photos').textContent=allPhotos.length;
+
+    const {
+        count
+    }
+
+    =await sb.from('profiles').select('*', {
+        count: 'exact', head: true
+    });
+document.getElementById('stat-grads').textContent=count || 0;
+}
+
+// ─────────────────────────────────────────────
+// UPLOAD
+// ─────────────────────────────────────────────
+let pendingFile=null;
+
+function openUploadModal() {
+    if ( !currentProfile) {
+        showToast('Join the album first to upload photos!');
+        showPage('profile');
+        return;
+    }
+
+    document.getElementById('upload-modal').classList.add('open');
+}
+
+function closeUploadModal() {
+    document.getElementById('upload-modal').classList.remove('open');
+    document.getElementById('img-preview').style.display='none';
+    document.getElementById('img-preview').src='';
+    document.getElementById('upload-caption').value='';
+    document.getElementById('upload-btn').disabled=true;
+    document.getElementById('photo-input').value='';
+    document.getElementById('progress-fill').style.width='0%';
+    document.getElementById('upload-progress').style.display='none';
+    pendingFile=null;
+}
+
+function previewPhoto(input) {
+    if ( !input.files[0]) return;
+    pendingFile=input.files[0];
+    const reader=new FileReader();
+
+    reader.onload=e=> {
+        const preview=document.getElementById('img-preview');
+        preview.src=e.target.result;
+        preview.style.display='block';
+    }
+
+    ;
+    reader.readAsDataURL(pendingFile);
+    document.getElementById('upload-btn').disabled=false;
+}
+
+async function uploadPhoto() {
+    if ( !pendingFile || !currentProfile) return;
+    const btn=document.getElementById('upload-btn');
+    const progressBar=document.getElementById('upload-progress');
+    const progressFill=document.getElementById('progress-fill');
+    btn.disabled=true;
+    btn.innerHTML='<span class="spinner"></span>Uploading…';
+    progressBar.style.display='block';
+    progressFill.style.width='30%';
+
+    const caption=document.getElementById('upload-caption').value.trim();
+    const ext=pendingFile.name.split('.').pop();
+
+    const path=`$ {
+        Date.now()
+    }
+
+    _$ {
+        Math.random().toString(36).slice(2)
+    }
+
+    .$ {
+        ext
+    }
+
+    `;
+
+    // Upload to Supabase Storage
+    const {
+        error: storageError
+    }
+
+    =await sb.storage.from(BUCKET).upload(path, pendingFile, {
+        contentType: pendingFile.type
+    });
+
+if (storageError) {
+    showToast('Upload failed: ' + storageError.message);
+    btn.disabled=false;
+    btn.innerHTML='Upload 🚀';
+    return;
+}
+
+progressFill.style.width='60%';
+
+const {
+    data: urlData
+}
+
+=sb.storage.from(BUCKET).getPublicUrl(path);
+const publicUrl=urlData.publicUrl;
+
+// Save to DB
+const {
+    data: photo, error: dbError
+}
+
+=await sb.from('photos').insert({
+    uploader_id: currentProfile.id,
+    storage_path: path,
+    public_url: publicUrl,
+    caption
+}).select().single();
+
+if (dbError) {
+    showToast('DB error: ' + dbError.message);
+    return;
+}
+
+progressFill.style.width='80%';
+// Run face detection on this photo
+await detectAndTagFaces(photo, pendingFile);
+
+progressFill.style.width='100%';
+showToast('Photo uploaded! 🎉');
+closeUploadModal();
+loadPhotos();
+}
+
+// ─────────────────────────────────────────────
+// FACE DETECTION ON UPLOAD
+// ─────────────────────────────────────────────
+async function detectAndTagFaces(photo, file) {
+    try {
+        await loadFaceModels();
+        const img=await createImageBitmap(file);
+        const canvas=document.createElement('canvas');
+        canvas.width=img.width;
+        canvas.height=img.height;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+
+        const detections=await faceapi .detectAllFaces(canvas, new faceapi.TinyFaceDetectorOptions()) .withFaceLandmarks(true) .withFaceDescriptors();
+
+        if ( !detections.length) return;
+
+        // Load all profiles that have face descriptors
+        const {
+            data: profiles
+        }
+
+        =await sb.from('profiles').select('id, face_descriptor').not('face_descriptor', 'is', null);
+        if ( !profiles || !profiles.length) return;
+
+        const labeled=profiles.map(p=> new faceapi.LabeledFaceDescriptors(p.id, [new Float32Array(p.face_descriptor)]));
+        const matcher=new faceapi.FaceMatcher(labeled, 0.5);
+
+        const matched=new Set();
+
+        for (const det of detections) {
+            const match=matcher.findBestMatch(det.descriptor);
+
+            if (match.label !=='unknown' && !matched.has(match.label)) {
+                matched.add(match.label);
+
+                await sb.from('photo_faces').upsert({
+                    photo_id: photo.id, profile_id: match.label, confidence: 1 - match.distance
+                });
+        }
+    }
+}
+
+catch (e) {
+    console.warn('Face detection failed:', e);
+}
+}
+
+// ─────────────────────────────────────────────
+// LIGHTBOX
+// ─────────────────────────────────────────────
+function openLightbox(photoId) {
+    const photo=allPhotos.find(p=> p.id===photoId);
+    if ( !photo) return;
+    document.getElementById('lightbox-img').src=photo.public_url;
+    document.getElementById('lightbox-caption').textContent=photo.caption || '';
+    const names=(photo.photo_faces || []).map(f=> f.profiles?.name).filter(Boolean);
+
+    document.getElementById('lightbox-faces').innerHTML=names.map(n=> `<span class="face-chip" >👤 $ {
+            n
+        }
+
+        </span>`).join('');
+    document.getElementById('lightbox').classList.add('open');
+}
+
+function openLightboxByUrl(url, caption){
+document.getElementById('lightbox-img').src=url;
+document.getElementById('lightbox-caption').textContent=caption;
+document.getElementById('lightbox-faces').innerHTML='';
+document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+}
+
+// ─────────────────────────────────────────────
+// DRAG AND DROP
+// ─────────────────────────────────────────────
+function onDragOver(e) {
+    e.preventDefault();
+    document.getElementById('upload-zone').classList.add('dragover');
+}
+
+function onDragLeave(e) {
+    document.getElementById('upload-zone').classList.remove('dragover');
+}
+
+function onDrop(e) {
+    e.preventDefault();
+    document.getElementById('upload-zone').classList.remove('dragover');
+    const file=e.dataTransfer.files[0];
+
+    if (file && file.type.startsWith ('image/')) {
+        pendingFile=file;
+        openUploadModal();
+        const dt=new DataTransfer();
+        dt.items.add(file);
+        document.getElementById('photo-input').files=dt.files;
+        previewPhoto(document.getElementById('photo-input'));
+    }
+}
+
+// ─────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────
+let toastTimer;
+
+function showToast(msg) {
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=> t.classList.remove('show'), 3000);
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+(async ()=> {
+        updateStats();
+
+        if (currentProfile) {
+            renderProfile();
+        }
+    })();
+</script></body></html>
